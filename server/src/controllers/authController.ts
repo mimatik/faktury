@@ -56,7 +56,7 @@ export const login = async (req: Request, res: Response) => {
         const { email, password } = validation.data;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
+        if (!user || user.deletedAt !== null) {
             return res.status(400).json({ message: 'Nesprávné přihlašovací údaje' });
         }
 
@@ -80,7 +80,7 @@ export const getMe = async (req: Request, res: Response) => {
         const userId = req.user?.userId;
         const user = await prisma.user.findUnique({ where: { id: userId } });
 
-        if (!user) {
+        if (!user || user.deletedAt !== null) {
             return res.status(404).json({ message: 'User not found' });
         }
 

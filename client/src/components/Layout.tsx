@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, LogOut, Settings } from 'lucide-react';
+import { LayoutDashboard, Users as UsersIcon, LogOut, Settings } from 'lucide-react';
 import { Avatar } from './ui';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -44,7 +44,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             Přehled faktur
                         </Link>
                         <Link to="/customers" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive('/customers')}`}>
-                            <Users size={20} className={location.pathname === '/customers' ? 'text-primary-600' : 'text-slate-400'} />
+                            <UsersIcon size={20} className={location.pathname === '/customers' ? 'text-primary-600' : 'text-slate-400'} />
                             Adresář
                         </Link>
                     </nav>
@@ -53,8 +53,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <div className="px-4 mb-6">
                     <p className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">System</p>
                     <nav className="space-y-1">
-                        <Link to="/settings" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive('/settings')}`}>
-                            <Settings size={20} className={location.pathname === '/settings' ? 'text-primary-600' : 'text-slate-400'} />
+                        <Link to="/users" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive('/users')}`}>
+                            <UsersIcon size={20} className={location.pathname === '/users' ? 'text-primary-600' : 'text-slate-400'} />
+                            Správa uživatelů
+                        </Link>
+                        <Link to={`/users/edit/${user.id}`} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive(`/users/edit/${user.id}`)}`}>
+                            <Settings size={20} className={location.pathname === `/users/edit/${user.id}` ? 'text-primary-600' : 'text-slate-400'} />
                             Nastavení
                         </Link>
                     </nav>

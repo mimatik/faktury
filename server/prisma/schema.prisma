@@ -15,8 +15,10 @@ model User {
   ico         String?
   dic         String?
   address     String?
+  phone       String?
   bankAccount String?
   isVatPayer  Boolean    @default(false)
+  deletedAt   DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   invoices    Invoice[]

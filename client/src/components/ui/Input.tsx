@@ -43,6 +43,8 @@ export const Input: React.FC<CombinedInputProps> = ({
         />
     );
 
+    const iconPosition = as === 'textarea' ? 'top-5' : 'top-1/2';
+
     return (
         <div className={containerClassName}>
             {label && (
@@ -52,7 +54,7 @@ export const Input: React.FC<CombinedInputProps> = ({
             )}
             <div className="relative">
                 {Icon && (
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <div className={`absolute left-3 ${iconPosition} -translate-y-1/2 text-slate-400`}>
                         <Icon size={18} />
                     </div>
                 )}

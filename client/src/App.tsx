@@ -7,8 +7,9 @@ import { Register } from './pages/Register';
 import { InvoiceEditor } from './pages/InvoiceEditor';
 import { Customers } from './pages/Customers';
 import { InvoiceView } from './pages/InvoiceView';
-import { Settings } from './pages/Settings';
 import { Invoices } from './pages/Invoices';
+import { UserList } from './pages/UserList';
+import { UserEditor } from './pages/UserEditor';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user, isLoading } = useAuth();
@@ -54,9 +55,19 @@ function App() {
                             <InvoiceView />
                         </ProtectedRoute>
                     } />
-                    <Route path="/settings" element={
+                    <Route path="/users" element={
                         <ProtectedRoute>
-                            <Settings />
+                            <UserList />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/users/new" element={
+                        <ProtectedRoute>
+                            <UserEditor />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/users/edit/:id" element={
+                        <ProtectedRoute>
+                            <UserEditor />
                         </ProtectedRoute>
                     } />
                 </Routes>

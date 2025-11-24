@@ -43,7 +43,7 @@ export const Avatar: React.FC<AvatarProps> = ({ name, id, size = 'md', className
         <div
             className={`
                 ${sizeClasses[size]} 
-                rounded-full flex items-center justify-center 
+                rounded-full flex items-center justify-center shrink-0
                 text-white font-[600] shadow-sm
                 ${className}
             `}
