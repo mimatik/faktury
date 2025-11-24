@@ -2,12 +2,19 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../prismaClient';
+import { registerSchema, loginSchema } from '../utils/validationSchemas';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { email, password, companyName, ico, dic, address, bankAccount, isVatPayer } = req.body;
+        const validation = registerSchema.safeParse(req.body);
+
+        if (!validation.success) {
+            return res.status(400).json({ message: 'Validation error', errors: validation.error.format() });
+        }
+
+        const { email, password, companyName, ico, dic, address, bankAccount, isVatPayer } = validation.data;
 
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
@@ -40,16 +47,22 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     try {
-        const { email, password } = req.body;
+        const validation = loginSchema.safeParse(req.body);
+
+        if (!validation.success) {
+            return res.status(400).json({ message: 'Validation error', errors: validation.error.format() });
+        }
+
+        const { email, password } = validation.data;
 
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Nesprávné přihlašovací údaje' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Nesprávné přihlašovací údaje' });
         }
 
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });

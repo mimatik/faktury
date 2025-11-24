@@ -11,15 +11,27 @@ export const Login: React.FC = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        setEmailError('');
+        setPasswordError('');
+
         try {
             const data = await api.post('/auth/login', { email, password });
             login(data.token, data.user);
             navigate('/');
         } catch (err: any) {
-            setError(err.response?.data?.error || 'Chyba přihlášení');
+            if (err.response?.data?.errors) {
+                const errors = err.response.data.errors;
+                if (errors.email?._errors?.[0]) setEmailError(errors.email._errors[0]);
+                if (errors.password?._errors?.[0]) setPasswordError(errors.password._errors[0]);
+            } else {
+                setError(err.response?.data?.message || 'Chyba přihlášení');
+            }
         }
     };
 
@@ -50,8 +62,8 @@ export const Login: React.FC = () => {
                                 icon={Mail}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                required
                                 placeholder="vas@email.cz"
+                                error={emailError}
                             />
 
                             <Input
@@ -60,8 +72,8 @@ export const Login: React.FC = () => {
                                 icon={Lock}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                required
                                 placeholder="••••••••"
+                                error={passwordError}
                             />
                         </div>
 

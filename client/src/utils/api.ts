@@ -34,7 +34,9 @@ export const api = {
         });
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || 'API Error');
+            const error: any = new Error(errorData.message || 'API Error');
+            error.response = { data: errorData };
+            throw error;
         }
         return response.json();
     },
