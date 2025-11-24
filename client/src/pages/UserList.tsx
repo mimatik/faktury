@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
-import { Plus, Edit, Trash2, Search, Building2, Mail, AlertTriangle } from 'lucide-react';
-import { Avatar, Button, Card, Input } from '../components/ui';
+import { Plus, Edit, Trash2, Search, Mail, AlertTriangle } from 'lucide-react';
+import { Avatar, Button, Card, Input, Modal } from '../components/ui';
 
 interface User {
     id: string;
@@ -121,16 +121,16 @@ export const UserList: React.FC = () => {
                 </Button>
             </div>
 
-            <Card>
-                <div className="mb-6">
-                    <Input
-                        icon={Search}
-                        placeholder="Hledat podle názvu firmy, emailu nebo IČO..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
+            <Card variant="default" className="mb-6">
+                <Input
+                    icon={Search}
+                    placeholder="Hledat podle názvu firmy, emailu nebo IČO..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </Card>
 
+            <Card variant="table">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
@@ -234,67 +234,59 @@ export const UserList: React.FC = () => {
             </Card>
 
             {/* Delete Confirmation Modal */}
-            {deleteModalOpen && userToDelete && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                                <AlertTriangle className="text-red-600" size={24} />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900">Smazat uživatele</h3>
+            <Modal
+                isOpen={deleteModalOpen && !!userToDelete}
+                onClose={() => {
+                    setDeleteModalOpen(false);
+                    setUserToDelete(null);
+                    setDeleteInfo(null);
+                }}
+                title="Smazat uživatele"
+                size="md"
+                titleIcon={<AlertTriangle className="text-red-600" size={24} />}
+            >
+                {deleteInfo ? (
+                    <div className="mb-6">
+                        <div className={`p-4 rounded-lg ${deleteInfo.soft ? 'bg-yellow-50' : 'bg-green-50'}`}>
+                            <p className="text-sm font-medium text-slate-900 mb-1">
+                                {deleteInfo.message}
+                            </p>
+                            {deleteInfo.soft && deleteInfo.invoiceCount && (
+                                <p className="text-xs text-slate-600">
+                                    Uživatel má {deleteInfo.invoiceCount} faktur a byl pouze označen jako smazaný.
+                                </p>
+                            )}
                         </div>
-
-                        {deleteInfo ? (
-                            <div className="mb-6">
-                                <div
-                                    className={`p-4 rounded-lg ${deleteInfo.soft ? 'bg-yellow-50' : 'bg-green-50'
-                                        }`}
-                                >
-                                    <p className="text-sm font-medium text-slate-900 mb-1">
-                                        {deleteInfo.message}
-                                    </p>
-                                    {deleteInfo.soft && deleteInfo.invoiceCount && (
-                                        <p className="text-xs text-slate-600">
-                                            Uživatel má {deleteInfo.invoiceCount} faktur a byl pouze označen jako
-                                            smazaný.
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                <p className="text-slate-600 mb-2">
-                                    Opravdu chcete smazat uživatele{' '}
-                                    <strong>{userToDelete.companyName || userToDelete.email}</strong>?
-                                </p>
-                                <p className="text-sm text-slate-500 mb-6">
-                                    Pokud má uživatel faktury, bude pouze označen jako smazaný. Jinak bude
-                                    trvale odstraněn z databáze.
-                                </p>
-
-                                <div className="flex gap-3">
-                                    <Button
-                                        variant="secondary"
-                                        onClick={() => {
-                                            setDeleteModalOpen(false);
-                                            setUserToDelete(null);
-                                        }}
-                                        className="flex-1"
-                                    >
-                                        Zrušit
-                                    </Button>
-                                    <Button
-                                        onClick={handleDeleteConfirm}
-                                        className="flex-1 bg-red-600 hover:bg-red-700"
-                                    >
-                                        Smazat
-                                    </Button>
-                                </div>
-                            </>
-                        )}
                     </div>
-                </div>
-            )}
+                ) : (
+                    <>
+                        <p className="text-slate-600 mb-2">
+                            Opravdu chcete smazat uživatele <strong>{userToDelete?.companyName || userToDelete?.email}</strong>?
+                        </p>
+                        <p className="text-sm text-slate-500 mb-6">
+                            Pokud má uživatel faktury, bude pouze označen jako smazaný. Jinak bude trvale odstraněn z databáze.
+                        </p>
+                        <div className="flex gap-3">
+                            <Button
+                                variant="secondary"
+                                onClick={() => {
+                                    setDeleteModalOpen(false);
+                                    setUserToDelete(null);
+                                }}
+                                className="flex-1"
+                            >
+                                Zrušit
+                            </Button>
+                            <Button
+                                onClick={handleDeleteConfirm}
+                                className="flex-1 bg-red-600 hover:bg-red-700"
+                            >
+                                Smazat
+                            </Button>
+                        </div>
+                    </>
+                )}
+            </Modal>
         </div>
     );
 };

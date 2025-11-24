@@ -4,7 +4,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
     title?: string;
     subtitle?: string;
     actions?: ReactNode;
-    variant?: 'default' | 'bordered' | 'elevated';
+    variant?: 'default' | 'elevated' | 'table';
     children: ReactNode;
 }
 
@@ -18,9 +18,9 @@ export const Card: React.FC<CardProps> = ({
     ...props
 }) => {
     const variantClasses = {
-        default: 'bg-white rounded-xl shadow-card border border-slate-100 p-6',
-        bordered: 'bg-white rounded-xl border-2 border-slate-200 p-6',
-        elevated: 'bg-white rounded-xl shadow-lg p-6',
+        default: 'card shadow-card border-0 p-6',
+        elevated: 'card shadow-lg p-6',
+        table: 'card p-0 overflow-hidden border-0 shadow-soft',
     };
 
     return (

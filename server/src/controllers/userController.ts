@@ -200,7 +200,7 @@ export const deleteUser = async (req: Request, res: Response) => {
             });
 
             res.json({
-                message: 'User soft deleted successfully',
+                message: 'Uživatel odstraněn (soft delete)',
                 deleted: true,
                 soft: true,
                 invoiceCount: user._count.invoices
@@ -212,7 +212,7 @@ export const deleteUser = async (req: Request, res: Response) => {
             });
 
             res.json({
-                message: 'User permanently deleted',
+                message: 'Uživatel smazán natrvalo',
                 deleted: true,
                 soft: false
             });

@@ -203,7 +203,7 @@ export const Invoices: React.FC = () => {
             </Card>
 
             {/* Invoices List */}
-            <div className="card p-0 overflow-hidden border-0 shadow-soft">
+            <Card variant="table">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="bg-slate-50 border-b border-slate-100">
@@ -290,7 +290,7 @@ export const Invoices: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+            </Card>
+        </div >
     );
 };

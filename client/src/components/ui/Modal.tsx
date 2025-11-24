@@ -5,6 +5,7 @@ export interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title?: string;
+    titleIcon?: ReactNode;
     children: ReactNode;
     size?: 'sm' | 'md' | 'lg' | 'xl';
 }
@@ -13,6 +14,7 @@ export const Modal: React.FC<ModalProps> = ({
     isOpen,
     onClose,
     title,
+    titleIcon,
     children,
     size = 'md',
 }) => {
@@ -28,6 +30,19 @@ export const Modal: React.FC<ModalProps> = ({
         };
     }, [isOpen]);
 
+    // Close modal on Escape key press
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     const sizeClasses = {
@@ -38,11 +53,16 @@ export const Modal: React.FC<ModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
             <div className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} overflow-hidden animate-in fade-in zoom-in duration-200`}>
                 {title && (
-                    <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <h2 className="text-xl font-bold text-slate-900">{title}</h2>
+                    <div className="p-6 border-b border-slate-100 flex items-center bg-slate-50/50">
+                        {titleIcon && (
+                            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                                {titleIcon}
+                            </div>
+                        )}
+                        <h2 className="text-xl font-bold text-slate-900 mr-auto">{title}</h2>
                         <button
                             onClick={onClose}
                             className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors"
