@@ -1,0 +1,68 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { Layout } from './components/Layout';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { InvoiceEditor } from './pages/InvoiceEditor';
+import { Customers } from './pages/Customers';
+import { InvoiceView } from './pages/InvoiceView';
+import { Settings } from './pages/Settings';
+import { Invoices } from './pages/Invoices';
+
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { user, isLoading } = useAuth();
+    if (isLoading) return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    if (!user) return <Navigate to="/login" />;
+    return <Layout>{children}</Layout>;
+};
+
+function App() {
+    return (
+        <Router>
+            <AuthProvider>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/" element={
+                        <ProtectedRoute>
+                            <Invoices />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/invoices/new" element={
+                        <ProtectedRoute>
+                            <InvoiceEditor />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/invoices" element={
+                        <ProtectedRoute>
+                            <Invoices />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/customers" element={
+                        <ProtectedRoute>
+                            <Customers />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/invoices/edit/:id" element={
+                        <ProtectedRoute>
+                            <InvoiceEditor />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/invoices/:id/pdf" element={
+                        <ProtectedRoute>
+                            <InvoiceView />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/settings" element={
+                        <ProtectedRoute>
+                            <Settings />
+                        </ProtectedRoute>
+                    } />
+                </Routes>
+            </AuthProvider>
+        </Router>
+    );
+}
+
+export default App;

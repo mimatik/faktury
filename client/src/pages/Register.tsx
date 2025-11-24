@@ -1,0 +1,94 @@
+import React, { useState } from 'react';
+import { api } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { UserPlus, Mail, Lock, Building2 } from 'lucide-react';
+import { Input, Button, Card } from '../components/ui';
+
+export const Register: React.FC = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [companyName, setCompanyName] = useState('');
+    const { login } = useAuth();
+    const navigate = useNavigate();
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const data = await api.post('/auth/register', { email, password, companyName });
+            login(data.token, data.user);
+            navigate('/');
+        } catch (err: any) {
+            setError(err.response?.data?.error || 'Chyba registrace');
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+            <div className="w-full max-w-md space-y-8">
+                <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-primary-500/30 mb-6">
+                        <UserPlus className="text-white" size={32} />
+                    </div>
+                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Vytvořit účet</h1>
+                    <p className="text-slate-500 mt-2">Začněte fakturovat chytře a jednoduše</p>
+                </div>
+
+                <Card className="shadow-xl shadow-slate-200/50 border-0">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="p-4 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                                {error}
+                            </div>
+                        )}
+
+                        <div className="space-y-4">
+                            <Input
+                                label="Název firmy / Jméno"
+                                type="text"
+                                icon={Building2}
+                                value={companyName}
+                                onChange={(e) => setCompanyName(e.target.value)}
+                                required
+                                placeholder="Vaše firma s.r.o."
+                            />
+
+                            <Input
+                                label="Email"
+                                type="email"
+                                icon={Mail}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                placeholder="vas@email.cz"
+                            />
+
+                            <Input
+                                label="Heslo"
+                                type="password"
+                                icon={Lock}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                placeholder="••••••••"
+                            />
+                        </div>
+
+                        <Button type="submit" variant="primary" className="w-full py-3 shadow-lg shadow-primary-500/20">
+                            Vytvořit účet
+                        </Button>
+                    </form>
+                </Card>
+
+                <p className="text-center text-slate-500">
+                    Již máte účet?{' '}
+                    <Link to="/login" className="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                        Přihlaste se
+                    </Link>
+                </p>
+            </div>
+        </div>
+    );
+};
