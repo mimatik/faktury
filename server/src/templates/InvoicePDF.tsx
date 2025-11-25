@@ -151,6 +151,18 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, user }) => {
                         <Text style={styles.value}>{invoice.customer.address}</Text>
                         <Text style={styles.value}>{t.ico}: {invoice.customer.ico}</Text>
                         <Text style={styles.value}>{t.dic}: {invoice.customer.dic}</Text>
+                        {invoice.customer.showContactOnInvoice && invoice.customer.contactName && (
+                            <>
+                                <Text style={{ ...styles.value, marginTop: 8, fontWeight: 'bold', fontSize: 8 }}>Kontakt:</Text>
+                                <Text style={styles.value}>{invoice.customer.contactName}</Text>
+                                {invoice.customer.contactEmail && (
+                                    <Text style={styles.value}>{invoice.customer.contactEmail}</Text>
+                                )}
+                                {invoice.customer.contactPhone && (
+                                    <Text style={styles.value}>{invoice.customer.contactPhone}</Text>
+                                )}
+                            </>
+                        )}
                     </View>
                 </View>
 

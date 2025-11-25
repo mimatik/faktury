@@ -9,6 +9,7 @@ interface Invoice {
     id: string;
     number: number;
     issueDate: string;
+    dueDate: string;
     total: number;
     currency: string;
     customer: { name: string };
@@ -100,14 +101,16 @@ export const Invoices: React.FC = () => {
     // Calculate stats based on filtered invoices
     const stats = filteredInvoices.reduce((acc, inv) => {
         const { base, vat } = calculateAmounts(inv);
+        const isOverdue = !inv.isPaid && new Date(inv.dueDate) < new Date();
         return {
             base: acc.base + base,
             vat: acc.vat + vat,
             count: acc.count + 1,
             paid: acc.paid + (inv.isPaid ? 1 : 0),
-            unpaid: acc.unpaid + (inv.isPaid ? 0 : 1)
+            unpaid: acc.unpaid + (inv.isPaid ? 0 : 1),
+            overdue: acc.overdue + (isOverdue ? 1 : 0)
         };
-    }, { base: 0, vat: 0, count: 0, paid: 0, unpaid: 0 });
+    }, { base: 0, vat: 0, count: 0, paid: 0, unpaid: 0, overdue: 0 });
 
     const showOwnerColumn = selectedUserId === '';
 
@@ -189,6 +192,12 @@ export const Invoices: React.FC = () => {
                                 Nezaplaceno: {stats.unpaid}
                             </span>
                         </div>
+                        {stats.overdue > 0 && (
+                            <div className="mt-2 text-sm text-red-600 font-semibold flex items-center gap-1">
+                                <Circle size={14} className="fill-red-600" />
+                                Po splatnosti: {stats.overdue}
+                            </div>
+                        )}
                     </div>
                 </Card>
             </div>
@@ -261,8 +270,12 @@ export const Invoices: React.FC = () => {
                             ) : (
                                 filteredInvoices.map((invoice) => {
                                     const { base, vat } = calculateAmounts(invoice);
+                                    const isOverdue = !invoice.isPaid && new Date(invoice.dueDate) < new Date();
                                     return (
-                                        <tr key={invoice.id} className="hover:bg-slate-50 transition-colors group">
+                                        <tr
+                                            key={invoice.id}
+                                            className={`hover:bg-slate-50 transition-colors group ${isOverdue ? 'bg-red-50' : ''}`}
+                                        >
                                             <td className="px-6 py-4">
                                                 <button
                                                     onClick={() => togglePaymentStatus(invoice.id, invoice.isPaid)}

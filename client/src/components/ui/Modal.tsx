@@ -18,6 +18,8 @@ export const Modal: React.FC<ModalProps> = ({
     children,
     size = 'md',
 }) => {
+    const [mouseDownOnBackdrop, setMouseDownOnBackdrop] = React.useState(false);
+
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -52,11 +54,28 @@ export const Modal: React.FC<ModalProps> = ({
         xl: 'max-w-4xl',
     };
 
+    const handleBackdropMouseDown = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            setMouseDownOnBackdrop(true);
+        }
+    };
+
+    const handleBackdropMouseUp = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget && mouseDownOnBackdrop) {
+            onClose();
+        }
+        setMouseDownOnBackdrop(false);
+    };
+
     return (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-            <div className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} overflow-hidden animate-in fade-in zoom-in duration-200`}>
+        <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onMouseDown={handleBackdropMouseDown}
+            onMouseUp={handleBackdropMouseUp}
+        >
+            <div className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200`}>
                 {title && (
-                    <div className="p-6 border-b border-slate-100 flex items-center bg-slate-50/50">
+                    <div className="p-6 border-b border-slate-100 flex items-center bg-slate-50/50 flex-shrink-0">
                         {titleIcon && (
                             <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-3">
                                 {titleIcon}
@@ -71,7 +90,7 @@ export const Modal: React.FC<ModalProps> = ({
                         </button>
                     </div>
                 )}
-                <div className="p-6">
+                <div className="p-6 overflow-y-auto flex-1">
                     {children}
                 </div>
             </div>

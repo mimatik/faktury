@@ -17,7 +17,20 @@ export const getCustomers = async (req: AuthRequest, res: Response) => {
 
 export const createCustomer = async (req: AuthRequest, res: Response) => {
     try {
-        const { name, email, address, ico, dic } = req.body;
+        const {
+            name,
+            email,
+            address,
+            ico,
+            dic,
+            defaultPrice,
+            defaultCurrency,
+            paymentTermsDays,
+            contactName,
+            contactEmail,
+            contactPhone,
+            showContactOnInvoice
+        } = req.body;
 
         const customer = await prisma.customer.create({
             data: {
@@ -26,6 +39,13 @@ export const createCustomer = async (req: AuthRequest, res: Response) => {
                 address,
                 ico,
                 dic,
+                defaultPrice,
+                defaultCurrency,
+                paymentTermsDays,
+                contactName,
+                contactEmail,
+                contactPhone,
+                showContactOnInvoice,
             },
         });
 
@@ -39,7 +59,20 @@ export const createCustomer = async (req: AuthRequest, res: Response) => {
 export const updateCustomer = async (req: AuthRequest, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, email, address, ico, dic } = req.body;
+        const {
+            name,
+            email,
+            address,
+            ico,
+            dic,
+            defaultPrice,
+            defaultCurrency,
+            paymentTermsDays,
+            contactName,
+            contactEmail,
+            contactPhone,
+            showContactOnInvoice
+        } = req.body;
 
         const customer = await prisma.customer.update({
             where: { id },
@@ -49,6 +82,13 @@ export const updateCustomer = async (req: AuthRequest, res: Response) => {
                 address,
                 ico,
                 dic,
+                defaultPrice,
+                defaultCurrency,
+                paymentTermsDays,
+                contactName,
+                contactEmail,
+                contactPhone,
+                showContactOnInvoice,
             },
         });
 

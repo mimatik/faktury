@@ -25,16 +25,23 @@ model User {
 }
 
 model Customer {
-  id        String    @id @default(uuid())
-  name      String
-  email     String?
-  phone     String?
-  address   String?
-  ico       String?
-  dic       String?
-  invoices  Invoice[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                   String    @id @default(uuid())
+  name                 String
+  email                String?
+  phone                String?
+  address              String?
+  ico                  String?
+  dic                  String?
+  defaultPrice         Float     @default(1500)
+  defaultCurrency      String    @default("CZK")
+  paymentTermsDays     Int?
+  contactName          String?
+  contactEmail         String?
+  contactPhone         String?
+  showContactOnInvoice Boolean   @default(false)
+  invoices             Invoice[]
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }
 
 model Invoice {

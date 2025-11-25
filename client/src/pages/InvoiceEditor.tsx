@@ -14,6 +14,13 @@ interface Customer {
     ico: string;
     dic?: string;
     address: string;
+    defaultPrice: number;
+    defaultCurrency: string;
+    paymentTermsDays?: number;
+    contactName?: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    showContactOnInvoice: boolean;
 }
 
 interface InvoiceItem {
@@ -38,7 +45,7 @@ export const InvoiceEditor: React.FC = () => {
         currency: 'CZK',
         language: 'cs',
         isVatReverseCharge: false,
-        items: [{ description: '', quantity: 1, unitPrice: 0, vatRate: 21 }] as InvoiceItem[]
+        items: [{ description: '', quantity: 0, unitPrice: 0, vatRate: 21 }] as InvoiceItem[]
     });
 
     useEffect(() => {
@@ -83,9 +90,12 @@ export const InvoiceEditor: React.FC = () => {
     };
 
     const addItem = () => {
+        const selectedCustomer = customers.find(c => c.id === formData.customerId);
+        const defaultPrice = selectedCustomer?.defaultPrice || 0;
+
         setFormData({
             ...formData,
-            items: [...formData.items, { description: '', quantity: 1, unitPrice: 0, vatRate: 21 }]
+            items: [...formData.items, { description: '', quantity: 1, unitPrice: defaultPrice, vatRate: 21 }]
         });
     };
 
@@ -158,7 +168,37 @@ export const InvoiceEditor: React.FC = () => {
             setFormData({ ...formData, customerId: '' });
             setIsCustomerModalOpen(true);
         } else {
-            setFormData({ ...formData, customerId: value });
+            const selectedCustomer = customers.find(c => c.id === value);
+            // Check if this is a new invoice with empty first item
+            const isNewInvoiceWithEmptyItem = formData.items.length === 1 &&
+                formData.items[0].description === '';
+
+            // Calculate due date if customer has payment terms
+            let newDueDate = formData.dueDate;
+            if (selectedCustomer?.paymentTermsDays) {
+                const issueDate = new Date(formData.issueDate);
+                const dueDate = new Date(issueDate);
+                dueDate.setDate(dueDate.getDate() + selectedCustomer.paymentTermsDays);
+                newDueDate = dueDate.toISOString().split('T')[0];
+            }
+
+            // Update items with default price if this is a new invoice
+            let newItems = formData.items;
+            if (isNewInvoiceWithEmptyItem && selectedCustomer) {
+                newItems = [{
+                    ...formData.items[0],
+                    unitPrice: selectedCustomer.defaultPrice
+                }];
+            }
+
+            setFormData({
+                ...formData,
+                customerId: value,
+                // Set currency from customer default if this is a new invoice with empty item
+                currency: isNewInvoiceWithEmptyItem && selectedCustomer ? selectedCustomer.defaultCurrency : formData.currency,
+                dueDate: newDueDate,
+                items: newItems
+            });
         }
     };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
-import { Plus, Users, MapPin, Building2, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Users, MapPin, Building2, Pencil, Trash2, DollarSign, Calendar, User } from 'lucide-react';
 import { Button, SearchBar, Modal, Card, IconButton } from '../components/ui';
 import { CustomerForm } from '../components/CustomerForm';
 
@@ -10,6 +10,13 @@ interface Customer {
     ico: string;
     dic?: string;
     address: string;
+    defaultPrice: number;
+    defaultCurrency: string;
+    paymentTermsDays?: number;
+    contactName?: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    showContactOnInvoice: boolean;
 }
 
 export const Customers: React.FC = () => {
@@ -122,6 +129,30 @@ export const Customers: React.FC = () => {
                                     <div className="flex items-center gap-2">
                                         <Building2 size={16} className="text-slate-400" />
                                         <span>DIČ: {customer.dic}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Defaults & Contact Info */}
+                            <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+                                <div className="flex items-center gap-2 text-sm">
+                                    <DollarSign size={16} className="text-primary-500" />
+                                    <span className="text-slate-700">
+                                        <span className="font-semibold">{customer.defaultPrice.toLocaleString('cs-CZ')}</span>
+                                        <span className="text-slate-500 ml-1">{customer.defaultCurrency}</span>
+                                    </span>
+                                    {customer.paymentTermsDays && (
+                                        <>
+                                            <span className="text-slate-300">•</span>
+                                            <Calendar size={16} className="text-blue-500" />
+                                            <span className="text-slate-600">{customer.paymentTermsDays} dní</span>
+                                        </>
+                                    )}
+                                </div>
+                                {customer.contactName && (
+                                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                                        <User size={16} className="text-slate-400" />
+                                        <span>{customer.contactName}</span>
                                     </div>
                                 )}
                             </div>
