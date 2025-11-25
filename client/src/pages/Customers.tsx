@@ -113,7 +113,7 @@ export const Customers: React.FC = () => {
                     </div>
                 ) : (
                     filteredCustomers.map((customer) => (
-                        <div key={customer.id} className="card hover:shadow-lg transition-all duration-300 group">
+                        <Card className="transition-all duration-300 group hover:shadow-lg" key={customer.id}>
                             <div className="flex items-start justify-between mb-4">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center text-primary-600 font-bold text-lg">
                                     {customer.name[0]}
@@ -142,12 +142,12 @@ export const Customers: React.FC = () => {
 
                             <button
                                 onClick={() => handleEdit(customer)}
-                                className="mt-4 w-full btn btn-secondary text-sm py-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="mt-4 w-full btn btn-secondary text-sm py-2 gap-2 transition-opacity"
                             >
                                 <Pencil size={16} />
                                 Upravit
                             </button>
-                        </div>
+                        </Card>
                     ))
                 )}
             </div>

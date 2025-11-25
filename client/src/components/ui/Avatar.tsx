@@ -30,6 +30,8 @@ export const Avatar: React.FC<AvatarProps> = ({ name, id, size = 'md', className
         return `hsl(${h}, ${s}%, ${l}%)`;
     };
 
+    const baseClasses = 'rounded-full flex items-center justify-center shrink-0 text-white font-[600] shadow-sm';
+
     const sizeClasses = {
         sm: 'w-7 h-7 text-xs',
         md: 'w-8 h-8 text-sm',
@@ -41,12 +43,7 @@ export const Avatar: React.FC<AvatarProps> = ({ name, id, size = 'md', className
 
     return (
         <div
-            className={`
-                ${sizeClasses[size]} 
-                rounded-full flex items-center justify-center shrink-0
-                text-white font-[600] shadow-sm
-                ${className}
-            `}
+            className={`${baseClasses} ${sizeClasses[size]} ${className}`}
             style={{ backgroundColor: bgColor }}
             title={name}
         >

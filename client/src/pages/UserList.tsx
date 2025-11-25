@@ -97,6 +97,8 @@ export const UserList: React.FC = () => {
         }
     };
 
+    const thClasses = 'text-left py-3 px-4 text-xs uppercase font-semibold text-slate-700';
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -134,25 +136,13 @@ export const UserList: React.FC = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b border-slate-200">
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
-                                    Firma
-                                </th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
-                                    Email
-                                </th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
-                                    IČO / DIČ
-                                </th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
-                                    Plátce DPH
-                                </th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
-                                    Vytvořeno
-                                </th>
-                                <th className="text-right py-3 px-4 text-sm font-semibold text-slate-700">
-                                    Akce
-                                </th>
+                            <tr className="border-b border-slate-100 bg-slate-50">
+                                <th className={thClasses}>Uživatel</th>
+                                <th className={thClasses}>Email</th>
+                                <th className={thClasses}>IČO / DIČ</th>
+                                <th className={thClasses}>Plátce DPH</th>
+                                <th className={thClasses}>Vytvořeno</th>
+                                <th className={`${thClasses} text-right pr-6`}>Akce</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -175,7 +165,7 @@ export const UserList: React.FC = () => {
                                                     id={user.id}
                                                     size="sm"
                                                 />
-                                                <span className="text-sm font-[600] text-slate-600">
+                                                <span className="text-sm font-[600]">
                                                     {user.companyName || '-'}
                                                 </span>
                                             </div>

@@ -20,7 +20,7 @@ export const Card: React.FC<CardProps> = ({
     const variantClasses = {
         default: 'card shadow-card border-0 p-6',
         elevated: 'card shadow-lg p-6',
-        table: 'card p-0 overflow-hidden border-0 shadow-soft',
+        table: 'card p-0 overflow-hidden border-1 shadow-soft',
     };
 
     return (

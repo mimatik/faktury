@@ -108,6 +108,8 @@ export const Invoices: React.FC = () => {
 
     const showOwnerColumn = selectedUserId === '';
 
+    const thClasses = 'text-left py-3 px-6 text-xs font-semibold text-slate-700 uppercase tracking-wider';
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -208,14 +210,14 @@ export const Invoices: React.FC = () => {
                     <table className="w-full text-left">
                         <thead className="bg-slate-50 border-b border-slate-100">
                             <tr>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Číslo faktury</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Zákazník</th>
+                                <th className={thClasses}>Číslo faktury</th>
+                                <th className={thClasses}>Zákazník</th>
                                 {showOwnerColumn && (
-                                    <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Vlastník</th>
+                                    <th className={thClasses}>Vlastník</th>
                                 )}
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Datum vystavení</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider text-right">Částka</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider text-right">Akce</th>
+                                <th className={thClasses}>Datum vystavení</th>
+                                <th className={`${thClasses} text-right`}>Částka</th>
+                                <th className={`${thClasses} text-right`}>Akce</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">

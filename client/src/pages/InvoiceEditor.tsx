@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../utils/api';
 import { formatCurrency } from '../utils/formatters';
 import { Plus, Trash2, Save, ArrowLeft, Calendar, User, FileText, CreditCard, Settings } from 'lucide-react';
+import { Card } from '../components/ui/Card';
 
 interface Customer {
     id: string;
@@ -162,7 +163,7 @@ export const InvoiceEditor: React.FC = () => {
                 {/* Left Column - Main Info */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* General Info */}
-                    <div className="card space-y-6">
+                    <Card className="space-y-6">
                         <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
                             <FileText className="text-primary-600" size={20} />
                             <h2 className="text-lg font-bold text-slate-900">Základní údaje</h2>
@@ -239,10 +240,10 @@ export const InvoiceEditor: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Card>
 
                     {/* Items */}
-                    <div className="card space-y-6">
+                    <Card className="space-y-6">
                         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                             <div className="flex items-center gap-2">
                                 <CreditCard className="text-primary-600" size={20} />
@@ -395,12 +396,12 @@ export const InvoiceEditor: React.FC = () => {
                                 );
                             })()}
                         </div>
-                    </div>
+                    </Card>
                 </div>
 
                 {/* Right Column - Settings */}
                 <div className="space-y-8">
-                    <div className="card space-y-6">
+                    <Card className="space-y-6">
                         <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
                             <Settings className="text-primary-600" size={20} />
                             <h2 className="text-lg font-bold text-slate-900">Nastavení</h2>
@@ -443,7 +444,7 @@ export const InvoiceEditor: React.FC = () => {
                                 Přenesená daňová povinnost
                             </label>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             </div>
         </form>
