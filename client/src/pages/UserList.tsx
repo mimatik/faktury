@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import { Plus, Edit, Trash2, Search, Mail, AlertTriangle } from 'lucide-react';
-import { Avatar, Button, Card, Input, Modal } from '../components/ui';
+import { Avatar, Button, Card, Input, Modal, IconButton } from '../components/ui';
 
 interface User {
     id: string;
@@ -199,20 +199,18 @@ export const UserList: React.FC = () => {
                                         </td>
                                         <td className="py-4 px-4">
                                             <div className="flex items-center justify-end gap-2">
-                                                <button
+                                                <IconButton
+                                                    icon={Edit}
                                                     onClick={() => navigate(`/users/edit/${user.id}`)}
-                                                    className="p-2 text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
-                                                    title="Upravit"
-                                                >
-                                                    <Edit size={18} />
-                                                </button>
-                                                <button
+                                                    tooltip="Upravit"
+                                                    variant="default"
+                                                />
+                                                <IconButton
+                                                    icon={Trash2}
                                                     onClick={() => handleDeleteClick(user)}
-                                                    className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                    title="Smazat"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
+                                                    tooltip="Smazat"
+                                                    variant="danger"
+                                                />
                                             </div>
                                         </td>
                                     </tr>

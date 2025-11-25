@@ -3,7 +3,7 @@ import { LucideIcon } from 'lucide-react';
 
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     icon: LucideIcon;
-    variant?: 'default' | 'primary' | 'ghost';
+    variant?: 'default' | 'primary' | 'ghost' | 'danger';
     size?: 'sm' | 'md' | 'lg';
     tooltip?: string;
 }
@@ -22,6 +22,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
         default: 'text-slate-400 hover:text-primary-600 hover:bg-primary-50',
         primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
         ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+        danger: 'text-slate-400 hover:text-red-500 hover:bg-red-50',
     };
 
     const sizeClasses = {

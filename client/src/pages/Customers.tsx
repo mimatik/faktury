@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
-import { Plus, Users, MapPin, Building2, Pencil } from 'lucide-react';
-import { Button, SearchBar, Modal, Input, Card } from '../components/ui';
+import { Plus, Users, MapPin, Building2, Pencil, Trash2 } from 'lucide-react';
+import { Button, SearchBar, Modal, Card, IconButton } from '../components/ui';
+import { CustomerForm } from '../components/CustomerForm';
 
 interface Customer {
     id: string;
@@ -16,12 +17,6 @@ export const Customers: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
-    const [newCustomer, setNewCustomer] = useState({
-        name: '',
-        ico: '',
-        dic: '',
-        address: ''
-    });
 
     useEffect(() => {
         fetchCustomers();
@@ -36,41 +31,32 @@ export const Customers: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            if (editingCustomer) {
-                // Update existing customer
-                await api.put(`/customers/${editingCustomer.id}`, newCustomer);
-            } else {
-                // Create new customer
-                await api.post('/customers', newCustomer);
-            }
-            setIsModalOpen(false);
-            setEditingCustomer(null);
-            setNewCustomer({ name: '', ico: '', dic: '', address: '' });
-            fetchCustomers();
-        } catch (error) {
-            console.error(error);
-            alert('Chyba při ukládání zákazníka');
-        }
-    };
-
     const handleEdit = (customer: Customer) => {
         setEditingCustomer(customer);
-        setNewCustomer({
-            name: customer.name,
-            ico: customer.ico,
-            dic: customer.dic || '',
-            address: customer.address
-        });
         setIsModalOpen(true);
     };
 
-    const handleCloseModal = () => {
+    const handleSuccess = () => {
         setIsModalOpen(false);
         setEditingCustomer(null);
-        setNewCustomer({ name: '', ico: '', dic: '', address: '' });
+        fetchCustomers();
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        setEditingCustomer(null);
+    };
+
+    const handleDelete = async (customer: Customer) => {
+        if (window.confirm(`Opravdu chcete smazat odběratele "${customer.name}"? Tato akce je nevratná.`)) {
+            try {
+                await api.delete(`/customers/${customer.id}`);
+                fetchCustomers();
+            } catch (error) {
+                console.error(error);
+                alert('Chyba při mazání odběratele');
+            }
+        }
     };
 
     const filteredCustomers = customers.filter(c =>
@@ -140,13 +126,21 @@ export const Customers: React.FC = () => {
                                 )}
                             </div>
 
-                            <button
-                                onClick={() => handleEdit(customer)}
-                                className="mt-4 w-full btn btn-secondary text-sm py-2 gap-2 transition-opacity"
-                            >
-                                <Pencil size={16} />
-                                Upravit
-                            </button>
+                            <div className="flex gap-2 mt-4">
+                                <button
+                                    onClick={() => handleEdit(customer)}
+                                    className="flex-1 btn btn-secondary text-sm py-2 gap-2 transition-opacity"
+                                >
+                                    <Pencil size={16} />
+                                    Upravit
+                                </button>
+                                <IconButton
+                                    icon={Trash2}
+                                    onClick={() => handleDelete(customer)}
+                                    tooltip="Smazat odběratele"
+                                    variant="danger"
+                                />
+                            </div>
                         </Card>
                     ))
                 )}
@@ -155,52 +149,14 @@ export const Customers: React.FC = () => {
             {/* Modal */}
             <Modal
                 isOpen={isModalOpen}
-                onClose={handleCloseModal}
+                onClose={handleCancel}
                 title={editingCustomer ? 'Upravit odběratele' : 'Nový odběratel'}
             >
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <Input
-                        label="Název firmy / Jméno"
-                        type="text"
-                        value={newCustomer.name}
-                        onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
-                        required
-                        autoFocus
-                    />
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <Input
-                            label="IČO"
-                            type="text"
-                            value={newCustomer.ico}
-                            onChange={(e) => setNewCustomer({ ...newCustomer, ico: e.target.value })}
-                            required
-                        />
-                        <Input
-                            label="DIČ (volitelné)"
-                            type="text"
-                            value={newCustomer.dic}
-                            onChange={(e) => setNewCustomer({ ...newCustomer, dic: e.target.value })}
-                        />
-                    </div>
-
-                    <Input
-                        label="Adresa"
-                        as="textarea"
-                        value={newCustomer.address}
-                        onChange={(e) => setNewCustomer({ ...newCustomer, address: e.target.value })}
-                        required
-                    />
-
-                    <div className="pt-4 flex justify-end gap-3">
-                        <Button type="button" variant="secondary" onClick={handleCloseModal}>
-                            Zrušit
-                        </Button>
-                        <Button type="submit" variant="primary">
-                            {editingCustomer ? 'Uložit změny' : 'Uložit'}
-                        </Button>
-                    </div>
-                </form>
+                <CustomerForm
+                    customer={editingCustomer || undefined}
+                    onSuccess={handleSuccess}
+                    onCancel={handleCancel}
+                />
             </Modal>
         </div>
     );
