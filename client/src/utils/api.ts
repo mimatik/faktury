@@ -56,6 +56,22 @@ export const api = {
         if (!response.ok) throw new Error('API Error');
         return response.json();
     },
+    patch: async (url: string, body: any) => {
+        const token = localStorage.getItem('token');
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+        };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        const response = await fetch(`${API_URL}${url}`, {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify(body),
+        });
+        if (!response.ok) throw new Error('API Error');
+        return response.json();
+    },
     delete: async (url: string) => {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}${url}`, {

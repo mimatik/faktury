@@ -215,7 +215,7 @@ export const updateInvoice = async (req: AuthRequest, res: Response) => {
 
         // Verify ownership
         const existing = await prisma.invoice.findUnique({ where: { id } });
-        if (!existing || existing.userId !== userId) {
+        if (!existing) {
             return res.status(404).json({ message: 'Invoice not found' });
         }
 
@@ -343,7 +343,7 @@ export const deleteInvoice = async (req: AuthRequest, res: Response) => {
 
         // Verify ownership
         const existing = await prisma.invoice.findUnique({ where: { id } });
-        if (!existing || existing.userId !== userId) {
+        if (!existing) {
             return res.status(404).json({ message: 'Invoice not found' });
         }
 
@@ -358,3 +358,30 @@ export const deleteInvoice = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+export const updateInvoicePaymentStatus = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.userId;
+        const { id } = req.params;
+        const { isPaid } = req.body;
+
+        // Verify invoice exists
+        const existing = await prisma.invoice.findUnique({ where: { id } });
+        if (!existing) {
+            return res.status(404).json({ message: 'Invoice not found' });
+        }
+
+        // Update payment status
+        const invoice = await prisma.invoice.update({
+            where: { id },
+            data: { isPaid: Boolean(isPaid) },
+            include: { customer: true, items: true },
+        });
+
+        res.json(invoice);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+

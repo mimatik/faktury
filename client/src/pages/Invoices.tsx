@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api, API_URL } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { Plus, Download, Pencil, Filter, DollarSign, Activity, FileText, Users as UsersIcon } from 'lucide-react';
+import { Plus, Download, Pencil, Filter, DollarSign, Activity, FileText, Users as UsersIcon, CheckCircle2, Circle, Coins } from 'lucide-react';
 import { Button, SearchBar, IconButton, Card, Avatar } from '../components/ui';
 
 interface Invoice {
@@ -14,6 +14,7 @@ interface Invoice {
     customer: { name: string };
     items: InvoiceItem[];
     user?: { id: string; companyName: string; email: string };
+    isPaid: boolean;
 }
 
 interface InvoiceItem {
@@ -102,11 +103,29 @@ export const Invoices: React.FC = () => {
         return {
             base: acc.base + base,
             vat: acc.vat + vat,
-            count: acc.count + 1
+            count: acc.count + 1,
+            paid: acc.paid + (inv.isPaid ? 1 : 0),
+            unpaid: acc.unpaid + (inv.isPaid ? 0 : 1)
         };
-    }, { base: 0, vat: 0, count: 0 });
+    }, { base: 0, vat: 0, count: 0, paid: 0, unpaid: 0 });
 
     const showOwnerColumn = selectedUserId === '';
+
+    const togglePaymentStatus = async (invoiceId: string, currentStatus: boolean) => {
+        try {
+            await api.patch(`/invoices/${invoiceId}/payment-status`, { isPaid: !currentStatus });
+            // Refresh invoices
+            const params = new URLSearchParams();
+            params.append('year', year.toString());
+            if (selectedUserId) {
+                params.append('userId', selectedUserId);
+            }
+            const data = await api.get(`/invoices?${params.toString()}`);
+            setInvoices(data);
+        } catch (error) {
+            console.error('Error updating payment status:', error);
+        }
+    };
 
     const thClasses = 'text-left py-3 px-6 text-xs font-semibold text-slate-700 uppercase tracking-wider';
 
@@ -160,7 +179,16 @@ export const Invoices: React.FC = () => {
                     <div className="relative z-10">
                         <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-1">Počet faktur</p>
                         <h3 className="text-3xl font-bold text-slate-900">{stats.count}</h3>
-                        <p className="text-sm text-slate-400 mt-2">Celkem vystaveno</p>
+                        <div className="flex items-center gap-4 mt-2 text-sm">
+                            <span className="text-green-600 flex items-center gap-1">
+                                <Coins size={14} />
+                                Zaplaceno: {stats.paid}
+                            </span>
+                            <span className="text-slate-400 flex items-center gap-1">
+                                <Coins size={14} />
+                                Nezaplaceno: {stats.unpaid}
+                            </span>
+                        </div>
                     </div>
                 </Card>
             </div>
@@ -210,6 +238,7 @@ export const Invoices: React.FC = () => {
                     <table className="w-full text-left">
                         <thead className="bg-slate-50 border-b border-slate-100">
                             <tr>
+                                <th className={thClasses}>Stav</th>
                                 <th className={thClasses}>Číslo faktury</th>
                                 <th className={thClasses}>Zákazník</th>
                                 {showOwnerColumn && (
@@ -223,7 +252,7 @@ export const Invoices: React.FC = () => {
                         <tbody className="divide-y divide-slate-100">
                             {filteredInvoices.length === 0 ? (
                                 <tr>
-                                    <td colSpan={showOwnerColumn ? 6 : 5} className="px-6 py-12 text-center text-slate-500">
+                                    <td colSpan={showOwnerColumn ? 7 : 6} className="px-6 py-12 text-center text-slate-500">
                                         <FileText size={48} className="mx-auto mb-4 text-slate-300" />
                                         <p className="text-lg font-medium">Žádné faktury</p>
                                         <p className="text-sm mt-1">Začněte vytvořením nové faktury</p>
@@ -234,6 +263,19 @@ export const Invoices: React.FC = () => {
                                     const { base, vat } = calculateAmounts(invoice);
                                     return (
                                         <tr key={invoice.id} className="hover:bg-slate-50 transition-colors group">
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    onClick={() => togglePaymentStatus(invoice.id, invoice.isPaid)}
+                                                    className="flex items-center gap-2 transition-colors hover:opacity-70"
+                                                    title={invoice.isPaid ? 'Zaplaceno' : 'Nezaplaceno'}
+                                                >
+                                                    {invoice.isPaid ? (
+                                                        <Coins size={20} className="text-green-600" />
+                                                    ) : (
+                                                        <Coins size={20} className="text-slate-200" />
+                                                    )}
+                                                </button>
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <span className="font-mono text-sm font-medium text-slate-900">{invoice.number}</span>
                                             </td>

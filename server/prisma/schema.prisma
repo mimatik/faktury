@@ -54,6 +54,7 @@ model Invoice {
   qrCodeString   String?
   qrCodeDataUrl  String?
   status         String        @default("DRAFT")
+  isPaid         Boolean       @default(false)
   userId         String
   user           User          @relation(fields: [userId], references: [id])
   customerId     String
