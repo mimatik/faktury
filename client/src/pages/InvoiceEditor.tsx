@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { api } from '../utils/api';
+import { api, API_URL } from '../utils/api';
 import { formatCurrency } from '../utils/formatters';
-import { Plus, Trash2, Save, ArrowLeft, Calendar, User, FileText, CreditCard, Settings } from 'lucide-react';
+import { Plus, Trash2, Save, ArrowLeft, Calendar, User, FileText, CreditCard, Settings, Download } from 'lucide-react';
 import { Card } from '../components/ui/Card';
-import { Modal } from '../components/ui';
+import { Modal, Button } from '../components/ui';
 import { CustomerForm } from '../components/CustomerForm';
 import { IconButton } from '../components/ui/IconButton';
 
@@ -94,7 +94,7 @@ export const InvoiceEditor: React.FC = () => {
         setFormData({ ...formData, items: newItems });
     };
 
-    const handleDelete = async () => {
+    const handleDelete = async (e: React.FormEvent) => {
         if (!id) return;
 
         if (window.confirm('Opravdu chcete smazat tuto fakturu? Tato akce je nevratná.')) {
@@ -105,6 +105,8 @@ export const InvoiceEditor: React.FC = () => {
                 console.error(error);
                 alert('Chyba při mazání faktury');
             }
+        } else {
+            e.preventDefault();
         }
     };
 
@@ -119,6 +121,30 @@ export const InvoiceEditor: React.FC = () => {
                 await api.post('/invoices', formData);
             }
             navigate('/invoices');
+        } catch (error) {
+            console.error(error);
+            alert('Chyba při ukládání faktury');
+        }
+    };
+
+    const handleSaveAndDownload = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            let invoiceId = id;
+            if (id) {
+                // Update existing invoice
+                await api.put(`/invoices/${id}`, formData);
+            } else {
+                // Create new invoice
+                const newInvoice = await api.post('/invoices', formData);
+                invoiceId = newInvoice.id;
+            }
+            // Open PDF in new window
+            if (invoiceId) {
+                const token = localStorage.getItem('token');
+                window.open(`${API_URL}/invoices/${invoiceId}/pdf?token=${token}`, '_blank', 'noopener,noreferrer');
+            }
+            // navigate('/invoices');
         } catch (error) {
             console.error(error);
             alert('Chyba při ukládání faktury');
@@ -175,23 +201,15 @@ export const InvoiceEditor: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex gap-3">
-                        {id && (
-                            <button
-                                type="button"
-                                onClick={handleDelete}
-                                className="btn bg-red-600 hover:bg-red-700 text-white gap-2"
-                            >
-                                <Trash2 size={18} />
-                                Smazat
-                            </button>
-                        )}
-                        <button type="button" onClick={() => navigate(-1)} className="btn btn-secondary">
+                        {/* <Button type="button" icon={ArrowLeft} onClick={() => navigate(-1)} variant="ghost">
                             Zrušit
-                        </button>
-                        <button type="submit" className="btn btn-primary gap-2 shadow-lg shadow-primary-500/20">
-                            <Save size={18} />
+                        </Button> */}
+                        <Button type="submit" icon={Save}>
                             Uložit fakturu
-                        </button>
+                        </Button>
+                        <Button onClick={handleSaveAndDownload} icon={Download}>
+                            Uložit a stáhnout
+                        </Button>
                     </div>
                 </div>
 
@@ -437,7 +455,7 @@ export const InvoiceEditor: React.FC = () => {
                     </div>
 
                     {/* Right Column - Settings */}
-                    <div className="space-y-8">
+                    <div className="space-y-4">
                         <Card className="space-y-6">
                             <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
                                 <Settings className="text-primary-600" size={20} />
@@ -482,6 +500,18 @@ export const InvoiceEditor: React.FC = () => {
                                 </label>
                             </div>
                         </Card>
+                        <div className="flex justify-end mt-2">
+                            {id && (
+                                <Button
+                                    type="button"
+                                    onClick={handleDelete}
+                                    variant="danger"
+                                    icon={Trash2}
+                                >
+                                    Smazat
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </form>

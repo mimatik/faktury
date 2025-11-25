@@ -1,0 +1,50 @@
+export const translations = {
+    cs: {
+        title: 'FAKTURA - DAŇOVÝ DOKLAD',
+        invoiceNumber: 'Číslo dokladu',
+        supplier: 'DODAVATEL',
+        customer: 'ODBĚRATEL',
+        ico: 'IČO',
+        dic: 'DIČ',
+        account: 'Účet',
+        issueDate: 'Datum vystavení',
+        dueDate: 'Datum splatnosti',
+        taxableDate: 'DUZP',
+        item: 'Položka',
+        quantity: 'Mn.',
+        pricePerUnit: 'Cena/mj',
+        vatRate: 'DPH %',
+        vatAmount: 'DPH',
+        total: 'Celkem',
+        base: 'Základ',
+        totalToPay: 'Celkem k úhradě',
+        reverseCharge: 'Přenesená daňová povinnost',
+        footer: 'Faktura byla vystavena elektronicky.',
+        vatRecap: 'Rekapitulace DPH'
+    },
+    en: {
+        title: 'INVOICE',
+        invoiceNumber: 'Invoice Number',
+        supplier: 'SUPPLIER',
+        customer: 'CUSTOMER',
+        ico: 'Reg. No.',
+        dic: 'VAT ID',
+        account: 'Account',
+        issueDate: 'Issue Date',
+        dueDate: 'Due Date',
+        taxableDate: 'Tax Date',
+        item: 'Item',
+        quantity: 'Qty',
+        pricePerUnit: 'Unit Price',
+        vatRate: 'VAT %',
+        vatAmount: 'VAT',
+        total: 'Total',
+        base: 'Base',
+        totalToPay: 'Total to Pay',
+        reverseCharge: 'Reverse Charge',
+        footer: 'Invoice was generated electronically.',
+        vatRecap: 'VAT Recap'
+    }
+};
+
+export type Language = keyof typeof translations;

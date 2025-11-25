@@ -6,7 +6,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { InvoiceEditor } from './pages/InvoiceEditor';
 import { Customers } from './pages/Customers';
-import { InvoiceView } from './pages/InvoiceView';
+
 import { Invoices } from './pages/Invoices';
 import { UserList } from './pages/UserList';
 import { UserEditor } from './pages/UserEditor';
@@ -50,11 +50,7 @@ function App() {
                             <InvoiceEditor />
                         </ProtectedRoute>
                     } />
-                    <Route path="/invoices/:id/pdf" element={
-                        <ProtectedRoute>
-                            <InvoiceView />
-                        </ProtectedRoute>
-                    } />
+
                     <Route path="/users" element={
                         <ProtectedRoute>
                             <UserList />

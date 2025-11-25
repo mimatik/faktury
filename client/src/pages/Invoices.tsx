@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../utils/api';
+import { api, API_URL } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { Plus, Download, Pencil, Filter, DollarSign, Activity, FileText, Users as UsersIcon } from 'lucide-react';
@@ -276,13 +276,17 @@ export const Invoices: React.FC = () => {
                                                             className=""
                                                         />
                                                     </Link>
-                                                    <Link to={`/invoices/${invoice.id}/pdf`}>
+                                                    <a
+                                                        href={`${API_URL}/invoices/${invoice.id}/pdf?token=${localStorage.getItem('token')}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
                                                         <IconButton
                                                             icon={Download}
                                                             tooltip="Stáhnout PDF"
                                                             className=""
                                                         />
-                                                    </Link>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>

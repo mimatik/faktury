@@ -336,3 +336,25 @@ export const getNextInvoiceNumber = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+export const deleteInvoice = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.userId;
+        const { id } = req.params;
+
+        // Verify ownership
+        const existing = await prisma.invoice.findUnique({ where: { id } });
+        if (!existing || existing.userId !== userId) {
+            return res.status(404).json({ message: 'Invoice not found' });
+        }
+
+        // Delete invoice (items should be deleted via cascade, but we can be explicit if needed)
+        // Assuming cascade delete is configured in schema, otherwise we'd need to delete items first
+        await prisma.invoiceItem.deleteMany({ where: { invoiceId: id } });
+        await prisma.invoice.delete({ where: { id } });
+
+        res.status(204).send();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};

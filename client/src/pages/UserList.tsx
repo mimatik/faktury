@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
-import { Plus, Edit, Trash2, Search, Mail, AlertTriangle } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Mail, AlertTriangle } from 'lucide-react';
 import { Avatar, Button, Card, Input, Modal, IconButton } from '../components/ui';
 
 interface User {
@@ -200,7 +200,7 @@ export const UserList: React.FC = () => {
                                         <td className="py-4 px-4">
                                             <div className="flex items-center justify-end gap-2">
                                                 <IconButton
-                                                    icon={Edit}
+                                                    icon={Pencil}
                                                     onClick={() => navigate(`/users/edit/${user.id}`)}
                                                     tooltip="Upravit"
                                                     variant="default"
