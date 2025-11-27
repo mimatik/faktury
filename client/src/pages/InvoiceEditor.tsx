@@ -345,10 +345,9 @@ export const InvoiceEditor: React.FC = () => {
                                     <CreditCard className="text-primary-600" size={20} />
                                     <h2 className="text-lg font-bold text-slate-900">Položky faktury</h2>
                                 </div>
-                                <button type="button" onClick={addItem} className="btn btn-secondary text-sm py-1.5 px-3 gap-2">
-                                    <Plus size={16} />
+                                <Button type="button" onClick={addItem} size="sm" variant="secondary" icon={Plus}>
                                     Přidat položku
-                                </button>
+                                </Button>
                             </div>
 
                             <div className="space-y-4">

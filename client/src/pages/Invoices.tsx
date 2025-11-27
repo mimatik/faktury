@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { api, API_URL } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { Plus, Download, Pencil, Filter, DollarSign, Activity, FileText, Users as UsersIcon, CheckCircle2, Circle, Coins } from 'lucide-react';
+import { Plus, Download, Pencil, Filter, DollarSign, Activity, FileText, Users as UsersIcon, Circle, Coins } from 'lucide-react';
 import { Button, SearchBar, IconButton, Card, Avatar } from '../components/ui';
+import { useSessionState } from '../hooks/useSessionState';
 
 interface Invoice {
     id: string;
@@ -36,9 +37,11 @@ export const Invoices: React.FC = () => {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [availableYears, setAvailableYears] = useState<number[]>([]);
-    const [year, setYear] = useState(new Date().getFullYear());
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedUserId, setSelectedUserId] = useState(user?.id || ''); // Default to current user
+
+    // Session-persisted filter state
+    const [year, setYear] = useSessionState('invoices_year', new Date().getFullYear());
+    const [searchTerm, setSearchTerm] = useSessionState('invoices_search', '');
+    const [selectedUserId, setSelectedUserId] = useSessionState('invoices_user', user?.id || '');
 
     // Fetch users for filter
     useEffect(() => {

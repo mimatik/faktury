@@ -160,7 +160,7 @@ export const CustomerForm: React.FC<CustomerFormProps> = ({ customer, onSuccess,
                 required
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
                 <Input
                     label="Výchozí cena"
                     type="number"
@@ -182,16 +182,15 @@ export const CustomerForm: React.FC<CustomerFormProps> = ({ customer, onSuccess,
                         <option value="USD">USD ($)</option>
                     </select>
                 </div>
+                <Input
+                    label="Splatnost (dny)"
+                    type="number"
+                    value={formData.paymentTermsDays}
+                    onChange={(e) => setFormData({ ...formData, paymentTermsDays: e.target.value === '' ? '' : parseInt(e.target.value) })}
+                    min="0"
+                    placeholder="např. 14"
+                />
             </div>
-
-            <Input
-                label="Splatnost (dny)"
-                type="number"
-                value={formData.paymentTermsDays}
-                onChange={(e) => setFormData({ ...formData, paymentTermsDays: e.target.value === '' ? '' : parseInt(e.target.value) })}
-                min="0"
-                placeholder="např. 14"
-            />
 
             <div className="pt-4 border-t border-slate-200 space-y-4">
                 <h3 className="text-sm font-semibold text-slate-700 mb-3">Kontaktní informace (volitelné)</h3>

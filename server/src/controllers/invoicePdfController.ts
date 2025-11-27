@@ -20,9 +20,9 @@ export const downloadInvoicePdf = async (req: AuthRequest, res: Response) => {
         }
 
         // Check ownership
-        if (invoice.userId !== userId) {
-            return res.status(403).json({ message: 'Unauthorized' });
-        }
+        // if (invoice.userId !== userId) {
+        //     return res.status(403).json({ message: 'Unauthorized' });
+        // }
 
         const pdfStream = await renderToStream(
             React.createElement(InvoicePDF, { invoice, user: invoice.user }) as any

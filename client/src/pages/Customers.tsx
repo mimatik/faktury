@@ -157,14 +157,15 @@ export const Customers: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className="flex gap-2 mt-4">
-                                <button
+                            <div className="flex gap-2 mt-4 items-center">
+                                <Button
                                     onClick={() => handleEdit(customer)}
-                                    className="flex-1 btn btn-secondary text-sm py-2 gap-2 transition-opacity"
+                                    variant="secondary"
+                                    className='flex-1'
+                                    icon={Pencil}
                                 >
-                                    <Pencil size={16} />
                                     Upravit
-                                </button>
+                                </Button>
                                 <IconButton
                                     icon={Trash2}
                                     onClick={() => handleDelete(customer)}
